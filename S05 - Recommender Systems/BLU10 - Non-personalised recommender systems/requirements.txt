@@ -1,0 +1,7 @@
+jupyter
+matplotlib
+nbgrader
+numpy
+pandas
+mlxtend
+scipy
