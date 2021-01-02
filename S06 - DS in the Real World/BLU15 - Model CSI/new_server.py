@@ -96,7 +96,8 @@ def check_valid_column(observation):
         "SubjectEthnicityCode",
         "SubjectRaceCode",
         "SubjectSexCode",
-        "TownResidentIndicator"
+        "TownResidentIndicator",
+        "is_new"
     }
     
     keys = set(observation.keys())
@@ -134,9 +135,10 @@ def check_categorical_values(observation):
         "ResidentIndicator": [True, False],
         "TownResidentIndicator": [True, False],
         "StatuteReason": [
-            'Stop Sign', 'Other', 'Speed Related', 'Cell Phone', 'Traffic Control Signal', 'Defective Lights', 
+            'Stop Sign', 'Speed Related', 'Cell Phone', 'Traffic Control Signal', 'Defective Lights', 
             'Moving Violation', 'Registration', 'Display of Plates', 'Equipment Violation', 'Window Tint', 
-            'Suspended License', 'Seatbelt', 'Other/Error', 'STC Violation', 'Administrative Offense', 'Unlicensed Operation']
+            'Suspended License', 'Seatbelt', 'STC Violation', 'Administrative Offense', 'Unlicensed Operation']
+        "is_new": [True, False]
     }
     
     for key, valid_categories in valid_category_map.items():
