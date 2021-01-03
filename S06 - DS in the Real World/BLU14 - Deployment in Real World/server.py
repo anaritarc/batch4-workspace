@@ -36,15 +36,15 @@ DB.create_tables([Prediction], safe=True)
 # Unpickle the previously-trained model
 
 
-with open(os.path.join('data', 'baseline_model_columns.json')) as fh:
+with open(os.path.join('columns.json')) as fh:
     columns = json.load(fh)
 
 
-with open(os.path.join('data', 'baseline_model_pipeline.pickle'), 'rb') as fh:
+with open(os.path.join('pipeline.pickle'), 'rb') as fh:
     pipeline = joblib.load(fh)
 
 
-with open(os.path.join('data', 'baseline_model_dtypes.pickle'), 'rb') as fh:
+with open(os.path.join('dtypes.pickle'), 'rb') as fh:
     dtypes = pickle.load(fh)
 
 
@@ -61,12 +61,12 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     obs_dict = request.get_json()
-    _id = obs_dict['id']
-    observation = obs_dict['observation']
+    _id = obs_dict['observation_id']
+    observation = obs_dict['data']
     obs = pd.DataFrame([observation], columns=columns).astype(dtypes)
     proba = pipeline.predict_proba(obs)[0, 1]
     prediction = pipeline.predict(obs)[0]
-    response = {'prediction': bool(prediction), 'proba': proba}
+    response = {'prediction': bool(prediction), 'probability': proba}
     p = Prediction(
         observation_id=_id,
         proba=proba,
@@ -86,12 +86,12 @@ def predict():
 def update():
     obs = request.get_json()
     try:
-        p = Prediction.get(Prediction.observation_id == obs['id'])
+        p = Prediction.get(Prediction.observation_id == obs['observation_id'])
         p.true_class = obs['true_class']
         p.save()
         return jsonify(model_to_dict(p))
     except Prediction.DoesNotExist:
-        error_msg = 'Observation ID: "{}" does not exist'.format(obs['id'])
+        error_msg = 'Observation ID: "{}" does not exist'.format(obs['observation_id'])
         return jsonify({'error': error_msg})
 
 
