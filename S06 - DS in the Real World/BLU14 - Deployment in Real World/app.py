@@ -81,8 +81,6 @@ def check_request(request):
         response={}
         response['observation_id'] = request['observation_id']
         response['error']= "age"  
-        
-        
 
     # bloodpressure assert 4
     elif "bloodpressure" in request['data']:
@@ -122,8 +120,9 @@ def check_request(request):
     elif request['data']['oldpeak'] >10:
             response = {"error": ('oldpeak', str(request['data']['oldpeak']))}
 
-
-    
+    elif "data" in request:
+        response = '0'
+        
     return response
 
 
@@ -140,9 +139,9 @@ app = Flask(__name__)
 def predict():
     obs_dict = request.get_json()
     
-    response = check_request(obs_dict)
-    if "error" not in check:
-        return jsonify(response)
+    error = check_request(obs_dict)
+    if error !='0':
+        return jsonify(error)
 
     _id = obs_dict['observation_id']
     observation = obs_dict['data']
@@ -150,6 +149,7 @@ def predict():
     obs = pd.DataFrame([observation], columns=columns).astype(dtypes)
     proba = pipeline.predict_proba(obs)[0, 1]
     prediction = pipeline.predict(obs)[0]
+    
     response = {'prediction': bool(prediction), 'probability': proba}
     p = Prediction(
         observation_id=_id,
