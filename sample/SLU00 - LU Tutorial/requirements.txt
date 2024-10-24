@@ -57,4 +57,4 @@ urllib3==1.26.19           # via requests
 wcwidth==0.1.9            # via prompt-toolkit
 webencodings==0.5.1       # via bleach
 widgetsnbextension==3.5.1  # via ipywidgets
-zipp==3.1.0               # via importlib-metadata
+zipp==3.19.1               # via importlib-metadata
